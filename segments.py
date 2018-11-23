@@ -39,7 +39,6 @@ def main(path, intv, dest):
 
 def create_seg(path, dest, segpath, intv):
 	img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-	img = cv2.equalizeHist(img)
 	
 	h, w= img.shape[:2]
 	
