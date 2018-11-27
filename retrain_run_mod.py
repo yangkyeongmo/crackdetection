@@ -9,7 +9,7 @@ import os
 import argparse
 
 parent_path = '/home/luar7olye/Dropbox/Projects/crack/train_result'
-path_under_path = 'noeq/100x100'
+path_under_path = 'sizeeq,noeq/100x100'
 dataPath = os.path.join(parent_path, path_under_path)
 modelFullPath = os.path.join(dataPath, 'output_graph.pb')
 # 읽어들일 graph 파일 경로
@@ -65,6 +65,13 @@ def run_segs(path, seg):
 #original_image = cv2.equalizeHist()
 	original_image = cv2.cvtColor(original_image, cv2.COLOR_GRAY2BGR)
 	h, w = original_image.shape[:2]
+	if h > w:
+		h = 800
+		w = w*800/h
+	else:
+		h = h*800/w
+		w = 800
+	original_image = cv2.resize(original_image, (w, h))
 	overlay = np.zeros((h, w, 3), np.uint8)
 
 	x, y = 0, 0
