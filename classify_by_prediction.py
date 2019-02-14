@@ -66,7 +66,7 @@ def main(path, model_path):
 	else:
 		filelist.append(path)
 	filelist.sort()
-
+        items_left = len(filelist)
 	parent_dir = os.path.dirname(path)
 	crackpath = os.path.join(parent_dir, 'crack')
 	notcrackpath = os.path.join(parent_dir, 'not_crack')
@@ -84,8 +84,9 @@ def main(path, model_path):
 	cracknum = 0
 	notcracknum = 0
 	for filepath in filelist:
+                items_left = items_left - 1
 		filename = os.path.basename(filepath)
-		print(filename)
+                print(items_left.__str__() + ' items left, currently: ' + filename),
 		prediction = run_inference_on_image(filepath,sess, \
 				os.path.join(dataPath, 'output_labels.txt'))
 		if prediction > 0.95:

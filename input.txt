@@ -1,0 +1,6 @@
+python%%%retrain_run_mod.py%%%--path%%%new_test%%%--dest%%%new_test/30/30_250/%%%--seg%%%30%%%--model_path%%%smallimg/30/250/
+python%%%retrain_run_mod.py%%%--path%%%new_test%%%--dest%%%new_test/30/30_500/%%%--seg%%%30%%%--model_path%%%smallimg/30/500/
+python%%%retrain_run_mod.py%%%--path%%%new_test%%%--dest%%%new_test/50/50_250/%%%--seg%%%50%%%--model_path%%%smallimg/50/250/
+python%%%retrain_run_mod.py%%%--path%%%new_test%%%--dest%%%new_test/50/50_500/%%%--seg%%%50%%%--model_path%%%smallimg/50/500/
+python%%%retrain_run_mod.py%%%--path%%%new_test%%%--dest%%%new_test/100/100_250/%%%--seg%%%100%%%--model_path%%%smallimg/100/250/
+python%%%retrain_run_mod.py%%%--path%%%new_test%%%--dest%%%new_test/100/100_500/%%%--seg%%%100%%%--model_path%%%smallimg/100/500/
