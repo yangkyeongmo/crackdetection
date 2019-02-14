@@ -9,7 +9,7 @@ import os
 import argparse
 
 parent_path = '/home/luar7olye/Dropbox/Projects/crack/train_result'
-path_under_path = 'sizeeq,noeq/100x100'
+path_under_path = 'sizeeq,noeq/30x30'
 dataPath = os.path.join(parent_path, path_under_path)
 modelFullPath = os.path.join(dataPath, 'output_graph.pb')
 # 읽어들일 graph 파일 경로
@@ -59,8 +59,9 @@ def run_no_segs(path):
 	create_graph()
 	print(run_inference_on_image(path,sess).__str__())
 
-
+import time
 def run_segs(path, seg):
+        start_time = time.time()
 	original_image = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 #original_image = cv2.equalizeHist()
 	original_image = cv2.cvtColor(original_image, cv2.COLOR_GRAY2BGR)
@@ -75,6 +76,7 @@ def run_segs(path, seg):
 	overlay = np.zeros((h, w, 3), np.uint8)
 
 	x, y = 0, 0
+        intv = seg / 3
 	next_x, next_y = seg, seg
 	sess = tf.Session()
 	create_graph()
@@ -83,36 +85,49 @@ def run_segs(path, seg):
 			segment = original_image[y:next_y, x:next_x]
 			segimg = cv2.imwrite('seg.jpg', segment)
 			prediction = run_inference_on_image('seg.jpg', sess)
+                        is_red = False
+                        for i in range(y, next_y):
+                            for j in range(x, next_x):
+                                if overlay[i,j][2] > 0:
+                                    is_red = True
+                                    break
+                            
 			if prediction > 0.9:
 				overlay[y:next_y, x:next_x] = (0,0,255*prediction/2) 
-			elif prediction > 0.7:
+			elif prediction > 0.7 and not is_red:
 				overlay[y:next_y, x:next_x] = (0,255*prediction/2,0)
-			elif prediction >= 0:
+			elif prediction >= 0 and not is_red:
 				overlay[y:next_y, x:next_x] = (255*prediction/2,0,0)
 			elif prediction == None:
 				print("Prediction is NONE")
 				return
-			if prediction > 0.3:
-				cv2.putText(overlay, "{0:.3f}".format(prediction), \
-						(x, y+seg/2),\
-						cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
-			print(x.__str__() +','+ y.__str__() + ": " + prediction.__str__())
-			y = y + seg
-			next_y = next_y + seg
+			if prediction > 0.9:
+				'''cv2.putText(overlay, "{0:.3f}".format(prediction), \
+						(x, y),\
+						cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255))'''
+                        print(x.__str__() +':'+ next_x.__str__() +','+y.__str__() + \
+                                        ':' + next_y.__str__() + ' :: ' + prediction.__str__())
+			y = y + intv
+			next_y = next_y + intv
 			if next_y > h:
 				next_y = h
-		x = x + seg
-		next_x = next_x + seg
+		x = x + intv
+		next_x = next_x + intv
 		if next_x > w:
 			next_x = w
 		y = 0
 		next_y = seg
 	os.remove('seg.jpg')
 	rsltimg = cv2.addWeighted(original_image, 0.5, overlay, 0.5, 0)
+        #write result
 	rsltpath = path[0:-4] + path_under_path.replace("/", "_") + ',' + seg.__str__() + '.jpg'
 	cv2.imwrite(rsltpath, rsltimg)
-	print(rsltpath)
-
+        #write overlay
+        ovpath = rsltpath[0:-4] + '_' + 'overlay.jpg'
+        cv2.imwrite(ovpath, overlay)
+	print rsltpath
+        print "Total running time: " + (time.time()-start_time).__str__()
+        
 
 def main(path, seg):
 	filelist = list()
@@ -127,6 +142,7 @@ def main(path, seg):
 					filelist.append(os.path.join(path,file))
 	else:
 		filelist.append(path)
+        filelist.sort()
     
 	for filepath in filelist:
 		if seg == 0:

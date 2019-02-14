@@ -40,16 +40,14 @@ def main(path, intv, dest):
 def create_seg(path, dest, segpath, intv):
 	img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 	
-	h, w= img.shape[:2]
-	
+	h, w = img.shape[:2]
 	if h > w:
-		img = cv2.resize(img, (w*800/h,800))
+	    w = w*800/h
+            h = 800
 	else:
-		img = cv2.resize(img, (800, h*800/w))
-
-	cv2.imshow("resized image", img)
-	cv2.waitKey()
-
+	    w = 800
+            h = h*800/w
+        img = cv2.resize(img, (w, h))
 	x, y= 0, 0
 	next_x, next_y = x+intv, y+intv
 	while x < w:
