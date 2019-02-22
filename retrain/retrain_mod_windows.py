@@ -860,6 +860,8 @@ def main(_):
                               list(image_lists.keys())[predictions[i]]))
 
     output_path = os.path.join(FLAGS.output_parent_path, FLAGS.output_path)
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
     output_graph_path = os.path.join(output_path, 'output_graph.pb')
     output_labels_path = os.path.join(output_path, 'output_labels.txt')
     # 학습된 graph와 weights들을 포함한 labels를 쓴다.(write)
@@ -888,18 +890,18 @@ if __name__ == '__main__':
   parser.add_argument(
       '--output_graph',
       type=str,
-      default='/home/luar7olye/Dropbox/Projects/crack/train_result/output_graph.pb',
+      default='C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\train_result\\output_graph.pb',
       help='Where to save the trained graph.'
   )
   parser.add_argument(
       '--output_labels',
       type=str,
-      default='/home/luar7olye/Dropbox/Projects/crack/train_result/output_lables.txt',
+      default='C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\train_result\\output_labels.txt',
       help='Where to save the trained graph\'s labels.'
   )
   parser.add_argument(
-      "--output_parent_path", 
-      default='/home/luar7olye/Dropbox/Projects/crack/train_result/',
+      "--output_parent_path",
+      default='C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\train_result\\',
       type=str
   )
   
@@ -912,7 +914,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--summaries_dir',
       type=str,
-      default='/home/luar7olye/Dropbox/Projects/crack/log/retrain_logs',
+      default='C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\log\\retrain_logs',
       help='Where to save summary logs for TensorBoard.'
   )
   parser.add_argument(
@@ -986,7 +988,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--model_dir',
       type=str,
-      default='/home/luar7olye/Dropbox/Projects/crack/model',
+      default='C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\input\\model\\',
       help="""\
       Path to classify_image_graph_def.pb,
       imagenet_synset_to_human_label_map.txt, and
@@ -996,7 +998,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--bottleneck_dir',
       type=str,
-      default='/home/luar7olye/Dropbox/Projects/crack/bottleneck',
+      default='C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\bottleneck\\',
       help='Path to cache bottleneck layer values as files.'
   )
   parser.add_argument(

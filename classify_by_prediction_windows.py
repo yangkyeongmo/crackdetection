@@ -75,7 +75,7 @@ def main(path, model_path):
 	if not os.path.exists(notcrackpath):
 		os.mkdir(notcrackpath)
 
-	parent_dataPath = '/home/luar7olye/Dropbox/Projects/crack/train_result'
+	parent_dataPath = 'C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\train_result'
 	path_under_path = model_path
 	dataPath = os.path.join(parent_dataPath, path_under_path)
 
@@ -97,8 +97,7 @@ def main(path, model_path):
 			writepath = os.path.join(notcrackpath, filename)
 			notcracknum = notcracknum + 1
 			print(": not_crack")
-		shutil.copy(filepath, writepath)
-		os.remove(filepath)
+		os.rename(filepath, writepath)
 	print("Cracks: "+cracknum.__str__())
 	print("Not Cracks: "+notcracknum.__str__())
 

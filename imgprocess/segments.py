@@ -3,7 +3,8 @@ import os
 import argparse
 import numpy as np
 
-def main(path, intv, dest):
+
+def main(path, intv, dest, move):
 	filelist = list()
 	if not os.path.exists(path):
 		print("NO SUCH PATH ERROR: " + path)
@@ -30,25 +31,23 @@ def main(path, intv, dest):
 	else:
 		dir = os.path.dirname(path)
 
-	segpath = os.path.join(dir, "segs")
-	if not os.path.exists(segpath):
-		os.mkdir(segpath)
-
+	segpath = dir
 	for filepath in filelist:
-		create_seg(filepath, dest, segpath, intv)
+		create_seg(filepath, segpath, intv, move)
 
-def create_seg(path, dest, segpath, intv):
+
+def create_seg(path, segpath, intv, move):
 	img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 	
 	h, w = img.shape[:2]
 	if h > w:
-	    w = w*800/h
-            h = 800
+		w = w*800//h
+		h = 800
 	else:
-	    w = 800
-            h = h*800/w
-        img = cv2.resize(img, (w, h))
-	x, y= 0, 0
+		w = 800
+		h = h*800//w
+	img = cv2.resize(img, (w, h))
+	x, y = 0, 0
 	next_x, next_y = x+intv, y+intv
 	while x < w:
 		while y < h:
@@ -73,28 +72,30 @@ def create_seg(path, dest, segpath, intv):
 			i=0
 			while os.path.exists(write_path + '.jpg'):
 				write_path = original_write_path + '(' + i.__str__() + ')'
-				i = i +1
+				i = i + 1
 			write_path = write_path + '.jpg'
 			print(write_path)
 			trimed = img[y:next_y, x:next_x]
 			cv2.imwrite(write_path, trimed)
-			y = y + intv
-			if next_y + intv > h:
+			y = y + move
+			if next_y + move > h:
 				next_y = h
 			else:
-				next_y = next_y + intv
-		x = x + intv
-		if next_x + intv > w:
+				next_y += move
+		x = x + move
+		if next_x + move > w:
 			next_x = w
 		else:
-			next_x = next_x + intv
+			next_x += move
 		y = 0
 		next_y = y + intv
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--path", action="store")
 	parser.add_argument("--intv", action="store", type=int)
 	parser.add_argument("--dest", action="store")
+	parser.add_argument("--move", default=10, type=int)
 	arg = parser.parse_args()
-	main(arg.path, arg.intv, arg.dest)
+	main(arg.path, arg.intv, arg.dest, arg.move)
