@@ -859,18 +859,23 @@ def main(_):
           print('%70s  %s' % (test_filename,
                               list(image_lists.keys())[predictions[i]]))
 
+    output_path = os.path.join(FLAGS.output_parent_path, FLAGS.output_path)
+    output_graph_path = os.path.join(output_path, 'output_graph.pb')
+    output_labels_path = os.path.join(output_path, 'output_labels.txt')
     # 학습된 graph와 weights들을 포함한 labels를 쓴다.(write)
     output_graph_def = graph_util.convert_variables_to_constants(
         sess, graph.as_graph_def(), [FLAGS.final_tensor_name])
-    with gfile.FastGFile(FLAGS.output_graph, 'wb') as f:
+    with gfile.FastGFile(output_graph_path, 'wb') as f:
       f.write(output_graph_def.SerializeToString())
-    with gfile.FastGFile(FLAGS.output_labels, 'w') as f:
+    with gfile.FastGFile(output_labels_path, 'w') as f:
       f.write('\n'.join(image_lists.keys()) + '\n')
     if FLAGS.draw_graph == True:
       plt.plot(x, y)
       plt.xlim(0,FLAGS.how_many_training_steps)
-      plt.ylim(0,100)
-      plt.show()
+      plt.ylim(-5,105)
+      fig = plt.gcf()
+      #plt.show()
+      fig.savefig(os.path.join(os.path.dirname(output_graph_path), 'result_graph.png'))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -889,9 +894,21 @@ if __name__ == '__main__':
   parser.add_argument(
       '--output_labels',
       type=str,
-      default='/home/luar7olye/Dropbox/Projects/crack/train_result/output_labels.txt',
+      default='/home/luar7olye/Dropbox/Projects/crack/train_result/output_lables.txt',
       help='Where to save the trained graph\'s labels.'
   )
+  parser.add_argument(
+      "--output_parent_path", 
+      default='/home/luar7olye/Dropbox/Projects/crack/train_result/',
+      type=str
+  )
+  
+  parser.add_argument(
+      "--output_path", 
+      default=None, 
+      type=str
+  )
+  
   parser.add_argument(
       '--summaries_dir',
       type=str,
@@ -901,7 +918,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--how_many_training_steps',
       type=int,
-      default=1000,
+      default=500,
       help='How many training steps to run before ending.'
   )
   parser.add_argument(

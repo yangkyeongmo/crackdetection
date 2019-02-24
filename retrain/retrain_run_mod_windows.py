@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
-"""Inception v3 architecture 모델을 retraining한 모델을 이용해서 이미지에 대한 추론(inference)을 진행하는 예제"""
+"""Inception v3 architecture 모델을 retraining한 모델을 이용해서 
+이미지에 대한 추론(inference)을 진행하는 예제"""
 
 import cv2
 import numpy as np
 import tensorflow as tf
 import os
 import argparse
+import time
 
-parent_dataPath = 'C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\output\\train_result'
+parent_dataPath = 'C:\\Users\\HP\\Dropbox\\Projects\\crack\\data\\
+        output\\train_result'
+
 
 def create_graph(modelFullpath):
 	"""저장된(saved) GraphDef 파일로부터 graph를 생성하고 saver를 반환한다."""
@@ -17,6 +21,7 @@ def create_graph(modelFullpath):
 		graph_def = tf.GraphDef()
 		graph_def.ParseFromString(f.read())
 		_ = tf.import_graph_def(graph_def, name='')
+
 
 def run_inference_on_image(imagepath, sess, labelsFullpath):
 	answer = None
@@ -70,7 +75,6 @@ def record_result(rslt_path, start_time):
 	f.close()
 
 
-import time
 def run_segs(filepath, arg):
 	path = filepath
 	seg = arg.seg
@@ -93,7 +97,7 @@ def run_segs(filepath, arg):
 
 	x, y = 0, 0
 	intv = seg // 3
-	next_x, next_y = seg, seg
+	next_x,  next_y = seg, seg
 	sess = tf.Session()
 	create_graph(os.path.join(datapath, 'output_graph.pb'))
 	end_x, end_y = False, False

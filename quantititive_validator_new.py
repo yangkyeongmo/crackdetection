@@ -18,6 +18,11 @@ def get_parser():
         "--seg", "-s",
         type=int
     )
+    parser.add_argument(
+        "--record",
+        type=str
+    )
+    
     return parser
 
 
@@ -27,7 +32,7 @@ def _get_area_comparison(expected_ovl, real_ovl, x, next_x, y, next_y, val_img):
     core_x, core_y = x + seg//2, y + seg//2
 
     if all(expected_ovl[_y, _x][2] > 0 for _y in range(y, next_y) for _x in range(x, next_x)):
-        if not any(real_ovl[_y, _x][2] > 0 for _y in range(y, next_y)\
+        if not any(real_ovl[_y, _x][2] > 0 for _y in range(y, next_y)
                    for _x in range(x, next_x)):
             val_img[y:next_y, x:next_x] = (255, 0, 0)
             fp = 1
@@ -40,15 +45,22 @@ def _get_area_comparison(expected_ovl, real_ovl, x, next_x, y, next_y, val_img):
 
 
 def _write_val_imgs(val_img, expected_ovl, real_ovl, expected_ovl_path):
-    cv2.imwrite(expected_ovl_path + "-validation.jpg", val_img)
-    cv2.imwrite(expected_ovl_path + "-val_expected_ovl.jpg",
+    parent_path = os.path.dirname(expected_ovl_path)
+    val_dir = os.path.join(parent_path, "VAL")
+    if not os.path.exists(val_dir):
+        os.mkdir(val_dir)
+    filebasename = os.path.basename(expected_ovl_path)
+    cv2.imwrite(os.path.join(val_dir,
+                filebasename + "-validation.jpg"), val_img)
+    cv2.imwrite(os.path.join(val_dir,
+                filebasename + "-val_expected_ovl.jpg"),
                 cv2.addWeighted(expected_ovl, 0.5, val_img, 0.5, 0))
-    cv2.imwrite(expected_ovl_path + "-val_real_ovl.jpg",
+    cv2.imwrite(os.path.join(val_dir,
+                filebasename + "-val_real_ovl.jpg"),
                 cv2.addWeighted(real_ovl, 0.5, val_img, 0.5, 0))
 
 
 def _iterate_through_imgs_areas(expected_ovl_path, real_ovl_path, seg):
-    _rslt, _expected_count = 0, 0
     _fp, _fn = 0, 0
     expected_ovl = cv2.imread(expected_ovl_path)
     h, w = expected_ovl.shape[:2]
@@ -94,7 +106,7 @@ def main():
     fp, fn = _get_image_comparison_result(expected_ovl_path=arg.expected,
                                           real_ovl_path=arg.real,
                                           seg=arg.seg)
-    f = open(os.path.dirname(arg.expected) + "\\comparison_output.txt", 'a')
+    f = open(arg.record + "/comparison_output.txt", 'a')
     f.write(os.path.basename(arg.expected) + '\nFP : ' + fp.__str__()
             + '\nFN : ' + fn.__str__() + '\n')
     f.close()

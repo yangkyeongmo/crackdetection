@@ -1,19 +1,18 @@
 import argparse
-import os
-import sys
 import subprocess
+
 
 def main(arg):
     f = open(arg.input_txt)
     lines = f.readlines()
-    variables = {}
     for line in lines:
-        print line
+        print(line)
         args = line.split('%%%')
-        for i in range(0,len(args)):
+        for i in range(0, len(args)):
             args[i] = args[i].rstrip()
             print args[i]
         subprocess.call(args)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -21,10 +20,15 @@ if __name__ == "__main__":
         "--input_txt"
     )
     parser.add_argument(
-        "--args", 
+        "--args",
     )
     parser.add_argument(
-        "--command", 
+        "--command",
     )
+    parser.add_argument(
+        "--search_through",
+        default=False,
+        action="store_true")
+    
     arg = parser.parse_args()
     main(arg)
