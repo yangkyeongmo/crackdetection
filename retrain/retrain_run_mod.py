@@ -9,9 +9,11 @@ import tensorflow as tf
 import os
 import argparse
 import time
+import math
 
 
-parent_dataPath = '/home/luar7olye/Dropbox/Projects/crack/data/output/train_result'
+parent_dataPath =\
+        '/home/luar7olye/Dropbox/Projects/crack/data/output/train_result'
 
 
 def create_graph(modelFullpath):
@@ -72,7 +74,7 @@ def record_result(rslt_path, start_time):
     f = open(record_path, 'a+')
     print(os.path.join(os.path.dirname(rslt_path), 'record.txt'))
     f.write(rslt_path+'\n')
-    f.write("Total running time: " +
+    f.write("Total running time:" +
             (time.time()-start_time).__str__() + '\n')
     f.close()
 
@@ -88,12 +90,25 @@ def run_segs(filepath, arg):
     # original_image = cv2.equalizeHist()
     original_image = cv2.cvtColor(original_image, cv2.COLOR_GRAY2BGR)
     h, w = original_image.shape[:2]
-    if h > w:
-        w = w*800//h
-        h = 800
+    '''if h > w:
+        w = w*1600//h
+        h = 1600
     else:
-        h = h*800//w
-        w = 800
+        h = h*1600//w
+        w = 1600
+    original_image = cv2.resize(original_image, (w, h))
+    '''
+    print(w)
+    print(h)
+    BASESIZE = 1000000
+    ORGSIZE = w * h
+    print(ORGSIZE)
+    MULTIPLYSIZE = math.sqrt(BASESIZE / ORGSIZE)
+    w = int((int(w)*MULTIPLYSIZE))
+    h = int((int(h)*MULTIPLYSIZE))
+    print(MULTIPLYSIZE)
+    print(w)
+    print(h)
     original_image = cv2.resize(original_image, (w, h))
     overlay = np.zeros((h, w, 3), np.uint8)
 
@@ -119,19 +134,19 @@ def run_segs(filepath, arg):
                         break
             if prediction > 0.9:
                 overlay[y:next_y, x:next_x] =\
-                    (0, 0, 255*prediction/2)
+                    (0, 0, 255)
             elif prediction > 0.7 and not is_red:
                 overlay[y:next_y, x:next_x] =\
-                    (0, 255*prediction / 2, 0)
+                    (0, 255, 0)
             elif prediction >= 0 and not is_red:
                 overlay[y:next_y, x:next_x] =\
-                    (255*prediction/2, 0, 0)
+                    (255, 0, 0)
             elif prediction is None:
                 print("Prediction is NONE")
                 return
             if prediction > 0.9:
-                print(x.__str__() + ':' + next_x.__str__() + ',' +
-                      y.__str__() + ':' + next_y.__str__() + ' :: ' +
+                print(x.__str__(), ':', next_x.__str__(), ',',
+                      y.__str__(), ':', next_y.__str__(), ' :: ',
                       prediction.__str__())
             y = y + intv
             next_y = next_y + intv

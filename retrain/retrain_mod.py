@@ -144,11 +144,11 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
                                 (MAX_NUM_IMAGES_PER_CLASS + 1)) *
                                (100.0 / MAX_NUM_IMAGES_PER_CLASS))
             if percentage_hash < validation_percentage:
-              validation_images.append(base_name)
+                validation_images.append(base_name)
             elif percentage_hash < (testing_percentage + validation_percentage):
-              testing_images.append(base_name)
+                testing_images.append(base_name)
             else:
-              training_images.append(base_name)
+                training_images.append(base_name)
         result[label_name] = {
               'dir': dir_name,
               'training': training_images,
@@ -178,7 +178,7 @@ def get_image_path(image_lists, label_name, index, image_dir, category):
     category_list = label_lists[category]
     if not category_list:
         tf.logging.fatal('Label %s has no images in the category %s.',
-                           label_name, category)
+                         label_name, category)
     mod_index = index % len(category_list)
     base_name = category_list[mod_index]
     sub_dir = label_lists['dir']
